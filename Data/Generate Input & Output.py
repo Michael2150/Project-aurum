@@ -14,7 +14,7 @@ def get_regression_slope(xs,ys):
     a = sum(reg_val2)/sum(reg_val1)
     return a
 
-training_rows = 51
+training_rows = 11
 
 print("======== Reading Data ==========")
 input_file_name = "ParsedDataSmoll.csv"
@@ -26,6 +26,7 @@ reg_vals = []
 corr_vals = []
 outputs = []
 outputtimes = []
+outputdifs = []
 sec_output_time_difs = []
 
 timedifs = []
@@ -47,7 +48,8 @@ for row_data in input_data.iterrows():
     if i == training_rows:
         outputs.append(calcys[len(calcys)-1])
         outputtimes.append(calcxs[len(calcxs)-1])
-            
+        outputdifs.append(calcys[len(calcys)-1] - calcys[len(calcys)-2])
+                
         calcxs.pop()
         calcys.pop()
 
@@ -71,7 +73,8 @@ for row_data in input_data.iterrows():
 print("======== Saving Data ==========")
 inputdata = {"regression_slope":reg_vals,
              "correlation_coefficient":corr_vals,
-             "output":outputs,
+             "output_val":outputs,
+             "output_&_lastval_difference":outputdifs,
              "output_time":outputtimes,
              "section_&_output_time_difference":sec_output_time_difs,
              "section_start_time":starttimes,
@@ -82,7 +85,7 @@ inputdata = {"regression_slope":reg_vals,
              "section_max_min_difference":valdifs}
 generatedData = pd.DataFrame(data=inputdata)
 generatedData.to_csv('TrainingData.csv')
-print(generatedData.tail())
+print(generatedData)
     
 
     
