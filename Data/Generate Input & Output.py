@@ -17,7 +17,7 @@ def get_regression_slope(xs,ys):
 training_rows = 11
 
 print("======== Reading Data ==========")
-input_file_name = "ParsedDataSmoll.csv"
+input_file_name = "ParsedDataALL.csv"
 input_data = pd.read_csv(input_file_name)
 print(input_data)
 
@@ -40,11 +40,22 @@ valdifs = []
 calcxs = []
 calcys = []
 
-i = 0 
+i = 0
+rowcount = len(input_data)
+curpers = -1
+
 for row_data in input_data.iterrows():
     row = row_data[1]
+
+    pers = round(row_data[0]/rowcount*100)
+    if pers % 1 == 0:
+        if pers != curpers:
+            curpers = pers
+            print(str(pers) + "%")
+    
     calcxs.append(row["time"])
     calcys.append(row["value"])
+    
     if i == training_rows:
         outputs.append(calcys[len(calcys)-1])
         outputtimes.append(calcxs[len(calcxs)-1])

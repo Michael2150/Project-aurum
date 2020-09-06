@@ -33,6 +33,7 @@ for i in range(len(FileNames)):
     print(dataval.tail())
     concatData.append(dataval)
 raw_input_data = pd.concat(concatData)
+print(raw_input_data.tail())
 
 print("======== Parsing Data ==========")
 seconds = []
