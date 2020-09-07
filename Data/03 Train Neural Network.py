@@ -33,8 +33,15 @@ def norm_data(data):
     train_stats = data.describe()
     print(train_stats)
     train_stats = train_stats.transpose()
-    return (data - train_stats['mean']) / train_stats['std']
+    data = (data - train_stats['mean']) / train_stats['std']
+    print(data)
+    return data
 
+def norm(x):
+  train_stats = x.describe()
+  print(train_stats)
+  train_stats = train_stats.transpose()
+  return (x - train_stats['mean']) / train_stats['std']
 
 
 print("======== Reading Data ==========")
