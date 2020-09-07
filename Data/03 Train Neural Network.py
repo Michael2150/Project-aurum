@@ -13,8 +13,6 @@ import tensorflow_docs as tfdocs
 import tensorflow_docs.plots
 import tensorflow_docs.modeling
 
-
-
 def build_model():
   model = keras.Sequential([
     layers.Dense(64, activation='relu', input_shape=[len(input_data_set.keys())]),
@@ -29,27 +27,20 @@ def build_model():
                 metrics=['mae', 'mse'])
   return model
 
-def norm_data(data):
-    train_stats = data.describe()
-    print(train_stats)
-    train_stats = train_stats.transpose()
-    data = (data - train_stats['mean']) / train_stats['std']
-    print(data)
-    return data
-
-def norm(x):
-  train_stats = x.describe()
-  print(train_stats)
-  train_stats = train_stats.transpose()
-  return (x - train_stats['mean']) / train_stats['std']
-
+#normalizes
+def norm_data(x):
+  return(x-x.mean())/x.std()
 
 print("======== Reading Data ==========")
-data_set = pd.read_csv("TrainingData.csv")
-print(data_set)
+data_set = pd.read_csv("TrainingDataAll.csv")
+print(data_set.tail())
+
+print("======== Splitting Data ==========")
+train_data_set = data_set.sample(frac=0.8,random_state=0)
+test_data_set = data_set.drop(train_data_set.index)
 
 print("======== Getting Relevent Input Data ==========")
-corr_vals = data_set["correlation_coefficient"]
+corr_vals = train_data_set["correlation_coefficient"]
 inputdata = {"correlation_coefficient":corr_vals}
 input_data_set = pd.DataFrame(data=inputdata)
 print(input_data_set)
@@ -59,7 +50,7 @@ input_data_set = norm_data(input_data_set)
 print(input_data_set)
 
 print("======== Getting Relevent Output Data ==========")
-outputdifs = data_set["output_val"]
+outputdifs = train_data_set["output_val"]
 outputdata = {"output_&_lastval_difference":outputdifs}
 output_data_set = pd.DataFrame(data=outputdata)
 print(output_data_set)
@@ -68,21 +59,38 @@ print("======== Normalizing Output Data ==========")
 output_data_set = norm_data(output_data_set)
 print(output_data_set)
 
-
 print("======== Building Model ==========")
 model = build_model()
 print(model.summary())
 
+print("======== Testing Model Outputs ==========")
+example_batch = input_data_set[:10]
+print("input batch: " + str(example_batch))
+example_output = model.predict(example_batch)
+print("output: " + str(example_output))
+
 print("======== Training Model ==========")
-EPOCHS = 10
-
-print(input_data_set.keys()[0])
-
-
-train_labels = ["Label"]
-
+EPOCHS = 1000
 history = model.fit(
-  input_data_set, train_labels,
+  input_data_set, output_data_set,
   epochs=EPOCHS, validation_split = 0.2, verbose=0,
   callbacks=[tfdocs.modeling.EpochDots()])
+
+#Shows training data.
+hist = pd.DataFrame(history.history)
+hist['epoch'] = history.epoch
+print(hist.tail())
+
+print("======== Saving Model ==========")
+tf.keras.models.save_model(model,'saved_model')
+print("Saved")
+
+plt.plot(hist["epoch"],hist["loss"])
+plt.title("Loss over epoch")
+plt.xlabel("Epoch")
+plt.ylabel("Loss")
+plt.show()
+
+
+
 

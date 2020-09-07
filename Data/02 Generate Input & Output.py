@@ -17,7 +17,7 @@ def get_regression_slope(xs,ys):
 training_rows = 11
 
 print("======== Reading Data ==========")
-input_file_name = "ParsedDataALL.csv"
+input_file_name = "ParsedData.csv"
 input_data = pd.read_csv(input_file_name)
 print(input_data)
 
@@ -48,7 +48,7 @@ for row_data in input_data.iterrows():
     row = row_data[1]
 
     pers = round(row_data[0]/rowcount*100)
-    if pers % 1 == 0:
+    if pers % 5 == 0:
         if pers != curpers:
             curpers = pers
             print(str(pers) + "%")
@@ -97,6 +97,7 @@ inputdata = {"regression_slope":reg_vals,
 generatedData = pd.DataFrame(data=inputdata)
 generatedData.to_csv('TrainingData.csv')
 print(generatedData)
+print(generatedData.describe())
     
 
     
