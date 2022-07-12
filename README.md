@@ -1,3 +1,3 @@
 # Project-aurum
 
-a python project training a machine learning model with gold prices to predict an accurate future outcome.
+This project takes in a csv with tons of historical gold price data. It then processes and uses that data to train a neural network model. This model can then be used to predict gold prices.
